@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="botonSecundario">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:clickable">true</item>
+        <item name="android:foregroundTint">#000000</item>
+        <item name="android:foregroundTintMode">src_atop</item>
+        <item name="android:tint">#FFFFFF</item>
+        <item name="android:tintMode">multiply</item>
+    </style>
+</resources>

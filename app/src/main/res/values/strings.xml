@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">iTour</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_maps2">MapsActivity2</string>
+    <string name="title_activity_main2">MainActivity2</string>
+
+    <string name="butonAbrirInterfaz">Dale Click Aqui wei</string>
+    <string name="TituloInterfaz">Ubicaciones</string>
+    <string name="regresarMap">Regresar</string>
+    <string name="busquedda">Busqueda</string>
+    <string name="BotonMapa">Regresar Mapa.</string>
+    <string name="des">Este boton regresa al mapa</string>
+    <string name="buscador">Buscador</string>
+    <string name="scrollview">Scroll View</string>
+    <string name="opciones">Opcion</string>
+    <string name="prueba">Prueba</string>
+    <string name="bienvenida">Título</string>
+    <string name="bienvenida2">Da un toque en la imagen de la ubicación que desee saber información</string>
+
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
+</resources>
