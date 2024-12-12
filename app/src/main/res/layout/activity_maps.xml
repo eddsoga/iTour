@@ -16,14 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- BOTON PARA ABRIR EL APARTADO DE EVENTOS -->
+
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity" />
-
-        <!-- BOTON PARA ABRIR EL APARTADO DE EVENTOS -->
+            tools:context=".MapsActivity"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_ito"
@@ -56,7 +58,7 @@
             android:id="@+id/btn_buscar"
             style="@style/botonSecundario"
             android:background="@drawable/round_outline"
-            android:onClick="Lista"
+            android:onClick="openLista"
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/lupe"
@@ -84,7 +86,7 @@
             android:clickable="true"
             android:foregroundTint="#00050000"
             android:foregroundTintMode="src_atop"
-            android:onClick="Eventos"
+            android:onClick="openEventos"
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/calendario"
@@ -151,7 +153,7 @@
             android:background="@drawable/rounded_corner"
             android:backgroundTint="#FF9800"
             android:clickable="false"
-            android:onClick="Calendario"
+            android:onClick="openCalendario"
             android:shadowColor="@android:color/transparent"
             android:text="iTour"
             android:textAlignment="center"
@@ -177,7 +179,7 @@
             android:background="@drawable/rounded_corner"
             android:backgroundTint="#F4F4F4"
             android:clickable="false"
-            android:onClick="Calendario"
+            android:onClick="openCalendario"
             android:shadowColor="@android:color/transparent"
             android:textAlignment="center"
             android:textColor="#000000"
@@ -202,6 +204,7 @@
             android:backgroundTint="#505050"
             android:clickable="false"
             android:enabled="false"
+            android:onClick="openLista"
             android:scaleY="0.8"
             android:translationY="-2dp"
             app:cornerRadius="50px"
@@ -253,6 +256,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/map"
             app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/botonPython"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="253dp"
+            android:layout_marginEnd="68dp"
+            android:onClick="correrPyhton"
+            android:text="Button"
+            app:layout_constraintBottom_toTopOf="@+id/fondoBlanco"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.928" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
