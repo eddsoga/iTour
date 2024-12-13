@@ -1,70 +1,7 @@
-import heapq
-import math
-
-# Función heurística (distancia Euclidiana)
+# Función heurística (distancia Euclidiana simple)
 def heuristica(a, b):
-    return math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2)
+    return ((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2) ** 0.5
 
-# Algoritmo A* con el grafo de intersecciones
-def a_star(start, goal, intersections):
-    # Construir el grafo basado en la distancia mínima entre intersecciones cercanas
-    graph = {intersection: [] for intersection in intersections}
-
-    # Conectar cada intersección con otras cercanas
-    for i, intersection1 in enumerate(intersections):
-        for j, intersection2 in enumerate(intersections):
-            if i != j:
-                dist = heuristica(intersection1, intersection2)
-                # Establecer que la distancia entre dos puntos es el valor de la heurística
-                graph[intersection1].append((intersection2, dist))
-
-    # Nodos abiertos (por explorar)
-    open_list = []
-    heapq.heappush(open_list, (0 + heuristica(start, goal), 0, start))
-
-    # Mapas de padres y costos
-    came_from = {}
-    g_score = {start: 0}
-
-    while open_list:
-        # Nodo con el menor f-score
-        _, current_g, current = heapq.heappop(open_list)
-
-        # Si alcanzamos el destino
-        if current == goal:
-            path = []
-            while current in came_from:
-                path.append(current)
-                current = came_from[current]
-            path.append(start)
-            path.reverse()
-            return path
-
-        # Explorar vecinos
-        for neighbor, _ in graph.get(current, []):
-            tentative_g_score = current_g + heuristica(current, neighbor)
-            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
-                came_from[neighbor] = current
-                g_score[neighbor] = tentative_g_score
-                f_score = tentative_g_score + heuristica(neighbor, goal)
-                heapq.heappush(open_list, (f_score, tentative_g_score, neighbor))
-
-    return None  # Si no se encuentra un camino
-
-# Función para ser llamada desde Java (procesamiento de ubicaciones)
-def process_location(lat1, lon1, lat2, lon2, intersections):
-    start = (lat1, lon1)
-    goal = (lat2, lon2)
-
-    # Ejecutar A* con el grafo de intersecciones
-    path = a_star(start, goal, intersections)
-
-    if path:
-        return f"Ruta encontrada: {path}"
-    else:
-        return "No se pudo encontrar una ruta"
-
-# Intersecciones proporcionadas
 intersections = [
     (17.076439, -96.744914), (17.076326, -96.744487), (17.076649, -96.744375),
     (17.076735, -96.744356), (17.076480, -96.743916), (17.076693, -96.743817),
@@ -89,3 +26,87 @@ intersections = [
     (17.077341, -96.745687), (17.077346, -96.745688), (17.076939, -96.745454),
     (17.077477, -96.744869), (17.076268, -96.744850)
 ]
+
+# Algoritmo A* sin usar len, range, iter ni min
+def a_star(start, goal):
+    # Crear un grafo implícito basado en las intersecciones
+    graph = {}
+
+    # Usamos un índice manual y un ciclo while
+    current_index = 0
+    current = intersections[current_index] if intersections else None
+
+    while current is not None:  # Solo procesamos mientras haya elementos
+        graph[current] = []
+        for neighbor in intersections:
+            if current != neighbor:
+                dist = heuristica(current, neighbor)
+                if dist < 0.0005:  # Umbral de cercanía
+                    graph[current].append(neighbor)
+
+        # Avanzamos al siguiente índice
+        current_index += 1
+        if current_index == 0:
+            current = None  # Terminamos cuando no hay más intersecciones
+        else:
+            current = intersections[current_index] if current_index < 65 else None  # Manejamos fin de lista manualmente
+
+    # Nodos abiertos (por explorar)
+    open_list = []
+    open_list.append((0 + heuristica(start, goal), 0, start))
+
+    # Mapas de padres y costos
+    came_from = {}
+    g_score = {start: 0}
+
+    while open_list:
+        # Nodo con el menor f-score
+        current_f, current_g, current = open_list[0]
+        for node in open_list:
+            if node[0] < current_f:
+                current_f, current_g, current = node
+
+        open_list.remove((current_f, current_g, current))
+
+        # Si alcanzamos el destino
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            return path
+
+        # Explorar vecinos
+        for neighbor in graph.get(current, []):
+            tentative_g_score = current_g + 1  # Asumimos que la distancia entre nodos es 1
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score = tentative_g_score + heuristica(neighbor, goal)
+                open_list.append((f_score, tentative_g_score, neighbor))
+
+    return None  # Si no se encuentra un camino
+
+# Función para ser llamada desde Java (procesamiento de ubicaciones)
+def process_location(lat1, lon1, lat2, lon2):
+    start = (lat1, lon1)
+    goal = (lat2, lon2)
+
+    # Ejecutar A*
+    path = a_star(start, goal)
+
+    if path:
+        return f"Ruta encontrada: {path}"
+    else:
+        return "No se pudo encontrar una ruta"
+
+# Ejemplo de uso:
+# Intersecciones proporcionadas
+
+
+# Para obtener una ruta entre dos puntos, por ejemplo, entre el primer y el último
+process_location(17.076439, -96.744914, 17.076704, -96.743834)
+
+

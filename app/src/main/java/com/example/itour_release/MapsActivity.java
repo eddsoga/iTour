@@ -67,8 +67,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Inicialización
         aplicacion = (MyApplication) getApplicationContext();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-
+        // Inicializa destino con una posición predeterminada (puedes cambiarla a la que quieras)
+        destino = new LocationItem(
+                new LatLng(17.079082, -96.744324),  // Latitud y Longitud predeterminadas
+                "Destino Predeterminado",           // Título predeterminado
+                R.drawable.marcador,               // Icono predeterminado
+                "default",                         // Tipo de ubicación predeterminado
+                "",                                // Descripción predeterminada
+                "x"                                 // Ruta de imagen predeterminada
+        );
         // Configurar mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -126,10 +133,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateGPS();
 
         // Verifica si la ubicación actual está disponible
-        if (currentLocation != null && destino != null) {
+        if (currentLocation != null) {
             double latitude = currentLocation.getLatitude();
             double longitude = currentLocation.getLongitude();
-
             double destinoLat = destino.getPosition().latitude;
             double destinoLng = destino.getPosition().longitude;
 
