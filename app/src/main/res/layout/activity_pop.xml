@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corner"
         android:backgroundTint="#154717"
-        android:enabled="false"
+        android:enabled="true"
         android:text="Direcciones\n (Proximamente)"
         android:textAlignment="center"
         android:textAllCaps="true"

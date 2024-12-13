@@ -23,6 +23,23 @@ android {
             // On Apple silicon, you can omit x86_64.
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
+        flavorDimensions += "pyVersion"
+        productFlavors {
+            create("py313") { dimension = "pyVersion" }
+        }
+    }
+    chaquopy {
+        productFlavors {
+            getByName("py313") { version = "3.13" }
+        }
+        defaultConfig {
+            buildPython("C:\\Users\\Eduardo Soto\\AppData\\Local\\Programs\\Python\\Python313\\python.exe")
+            buildPython("C:\\Windows\\py.exe", "-3.13")
+            version = "3.13"
+            pip {
+                install("geopy")
+            }
+        }
 
     }
 
@@ -45,8 +62,8 @@ android {
 
 }
 
-dependencies {
 
+dependencies {
     implementation ("com.github.mancj:MaterialSearchBar:0.8.2")
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -66,4 +83,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.karumi:dexter:5.0.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    
 }

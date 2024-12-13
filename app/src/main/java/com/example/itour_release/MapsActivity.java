@@ -123,9 +123,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Python python = Python.getInstance();
         PyObject pythonFile = python.getModule("show_alert");
 
-        // Llamar a una función de Python y mostrar el resultado en un Toast
-        String mensaje = pythonFile.callAttr("show_toast").toString();
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+        updateGPS();
+
+        // Verifica si la ubicación actual está disponible
+        if (currentLocation != null && destino != null) {
+            double latitude = currentLocation.getLatitude();
+            double longitude = currentLocation.getLongitude();
+
+            double destinoLat = destino.getPosition().latitude;
+            double destinoLng = destino.getPosition().longitude;
+
+            // Llama a la función Python con ambas ubicaciones
+            String mensaje = pythonFile.callAttr(
+                    "process_location",
+                    latitude, longitude, destinoLat, destinoLng
+            ).toString();
+
+            Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No se pudo obtener la ubicación actual o el destino.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
