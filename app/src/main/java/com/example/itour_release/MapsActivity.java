@@ -154,6 +154,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return jsonArray.toString(); // Devuelve el JSON como String
     }
+    public  List<LocationItem> filtrarLoc(LatLng destino) {
+        List<LocationItem> filteredList = new ArrayList<>();
+        for (LocationItem item : LocationItemList.getLocationList()) {
+            // Si es una intersección o es el destino, agrégalo a la lista
+            if (item.getTitle().contains("Intersección") ||
+                    (item.getPosition().latitude == destino.latitude &&
+                            item.getPosition().longitude == destino.longitude)) {
+                filteredList.add(item);
+            }
+        }
+        return filteredList;
+    }
 
     private void marcarJEJE(){
         System.out.println("holaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -174,8 +186,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double destinoLat = destino.getPosition().latitude;
             double destinoLng = destino.getPosition().longitude;
 
-            // Genera el JSON con las intersecciones
-            String jsonString = convertLocationListToJson(LocationItemList.getLocationList());
+            List<LocationItem> filteredLocations =filtrarLoc(destino.getPosition());
+
+            String jsonString = convertLocationListToJson(filteredLocations);
             System.out.println(jsonString);
 
             String resultado = pythonFile.callAttr(

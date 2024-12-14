@@ -33,7 +33,7 @@ android {
             getByName("py38") { version = "3.8" }
         }
         defaultConfig {
-            buildPython("C:\\Users\\Eduardo Soto\\AppData\\Local\\Programs\\Python\\Python38\\python.exe")
+            buildPython("C:\\Users\\Angel\\AppData\\Local\\Programs\\Python\\Python38\\python.exe")
             buildPython("C:\\Windows\\py.exe", "-3.8")
             version = "3.8"
             pip {
