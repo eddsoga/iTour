@@ -91,8 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-        //config boton python
-        Button myButton = findViewById(R.id.botonPython);
+
         //Inicializar Python
         if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
@@ -156,10 +155,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return jsonArray.toString(); // Devuelve el JSON como String
     }
 
-    public void correrPyhton(View view) {
-
-    }
-
     private void marcarJEJE(){
         System.out.println("holaaaaaaaaaaaaaaaaaaaaaaaa");
         // Inicializar Python
@@ -169,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Python python = Python.getInstance();
         PyObject pythonFile = python.getModule("show_alert");
 
+        updateGPS();
         updateGPS();
 
         // Verifica si la ubicación actual está disponible
@@ -267,16 +263,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void cargarMarcadores() {
         List<LocationItem> locationList = LocationItemList.getLocationList();
         for (LocationItem item : locationList) {
-            agregarMarcador(item);
+            String title = item.getTitle();
+
+            // Verifica si el título contiene la palabra "Intersección"
+            if (title != null && !title.contains("Intersección")) {
+                agregarMarcador(item);
+            }
         }
     }
+
 
     // Refactor: Metodo para centrar el mapa según el destino configurado
     private void centrarMapa() {
 
         LatLng destino = aplicacion.getMiDestino();
         if (destino.longitude == 0.0) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(17.077711, -96.744199), 25.0f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(17.077711, -96.744199), 19.0f));
         } else {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destino, 19.0f));
             agregarMarcador(destino, "Marcador Destino", R.drawable.marcador);
