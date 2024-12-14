@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.itour_release"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.itour_release"
@@ -25,17 +25,17 @@ android {
         }
         flavorDimensions += "pyVersion"
         productFlavors {
-            create("py313") { dimension = "pyVersion" }
+            create("py38") { dimension = "pyVersion" }
         }
     }
     chaquopy {
         productFlavors {
-            getByName("py313") { version = "3.13" }
+            getByName("py38") { version = "3.8" }
         }
         defaultConfig {
-            buildPython("C:\\Users\\Eduardo Soto\\AppData\\Local\\Programs\\Python\\Python313\\python.exe")
-            buildPython("C:\\Windows\\py.exe", "-3.13")
-            version = "3.13"
+            buildPython("C:\\Users\\Angel\\AppData\\Local\\Programs\\Python\\Python38\\python.exe")
+            buildPython("C:\\Windows\\py.exe", "-3.8")
+            version = "3.8"
             pip {
                 install("geopy")
             }
@@ -59,6 +59,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    buildToolsVersion = "34.0.0"
 
 }
 

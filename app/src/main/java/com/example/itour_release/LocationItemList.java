@@ -87,7 +87,7 @@ public class LocationItemList {
         locationList.add(new LocationItem(new LatLng(17.077616, -96.745855), "Intersección 47", R.drawable.interseccion,"","",""));
         locationList.add(new LocationItem(new LatLng(17.078383, -96.745914), "Intersección 48", R.drawable.interseccion,"","",""));
 
-        // Agrega el resto de ubicaciones aquí
+
         locationList.add(new LocationItem(new LatLng(17.076757, -96.744942), "Intersección 49", R.drawable.interseccion, "", "", ""));
         locationList.add(new LocationItem(new LatLng(17.075572, -96.744810), "Intersección 50", R.drawable.interseccion, "", "", ""));
         locationList.add(new LocationItem(new LatLng(17.076482, -96.745068), "Intersección 51", R.drawable.interseccion, "", "", ""));

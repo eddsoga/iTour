@@ -97,4 +97,6 @@ public class LocationItem implements Parcelable {
     public String getRutaImagen() {return rutaImagen;}
     public void setRutaImagen(String rutaImagen) {this.rutaImagen = rutaImagen;}
 
+
+
 }

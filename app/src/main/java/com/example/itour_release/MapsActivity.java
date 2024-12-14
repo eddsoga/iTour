@@ -34,9 +34,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +64,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private List<Marker> markerList = new ArrayList<>();
     private LocationItem destino;
+
+    private Polyline currentPolyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +131,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(new Intent(this, Calendar_Activity.class));
     }
 
+
+    public static String convertLocationListToJson(List<LocationItem> locationList) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (LocationItem location : locationList) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("position", new JSONObject()
+                        .put("latitude", location.getPosition().latitude)
+                        .put("longitude", location.getPosition().longitude));
+                jsonObject.put("title", location.getTitle());
+                jsonObject.put("iconResourceId", location.getIconResourceId());
+                jsonObject.put("locationType", location.getLocationType());
+                jsonObject.put("description", location.getDescription());
+                jsonObject.put("rutaImagen", location.getRutaImagen());
+
+                jsonArray.put(jsonObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return jsonArray.toString(); // Devuelve el JSON como String
+    }
+
     public void correrPyhton(View view) {
+
+    }
+
+    private void marcarJEJE(){
+        System.out.println("holaaaaaaaaaaaaaaaaaaaaaaaa");
         // Inicializar Python
         if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
@@ -134,18 +173,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Verifica si la ubicación actual está disponible
         if (currentLocation != null) {
-            double latitude = currentLocation.getLatitude();
-            double longitude = currentLocation.getLongitude();
+            double latitude = 17.077050;
+            double longitude = -96.744519;
             double destinoLat = destino.getPosition().latitude;
             double destinoLng = destino.getPosition().longitude;
 
-            // Llama a la función Python con ambas ubicaciones
-            String mensaje = pythonFile.callAttr(
+            // Genera el JSON con las intersecciones
+            String jsonString = convertLocationListToJson(LocationItemList.getLocationList());
+            System.out.println(jsonString);
+
+            String resultado = pythonFile.callAttr(
                     "process_location",
-                    latitude, longitude, destinoLat, destinoLng
+                    latitude, longitude, destinoLat, destinoLng, jsonString
             ).toString();
 
-            Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+            try {
+                JSONArray jsonArray = new JSONArray(resultado);
+                List<LatLng> rutaPuntos = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONArray punto = jsonArray.getJSONArray(i);
+                    double lat = punto.getDouble(0);
+                    double lng = punto.getDouble(1);
+                    rutaPuntos.add(new LatLng(lat, lng));
+                }
+
+                if (mMap != null && !rutaPuntos.isEmpty()) {
+                    // Eliminar el camino previo si existe
+                    if (currentPolyline != null) {
+                        currentPolyline.remove();
+                    }
+
+                    // Dibujar la nueva ruta
+                    PolylineOptions polylineOptions = new PolylineOptions()
+                            .addAll(rutaPuntos)
+                            .width(10f)
+                            .color(android.graphics.Color.BLUE)
+                            .geodesic(true);
+
+                    currentPolyline = mMap.addPolyline(polylineOptions);
+
+                    // Opcional: mover la cámara para que muestre toda la ruta
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (LatLng p : rutaPuntos) {
+                        builder.include(p);
+                    }
+                    LatLngBounds bounds = builder.build();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error al parsear la ruta", Toast.LENGTH_SHORT).show();
+            }
+
+            Toast.makeText(this, resultado, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "No se pudo obtener la ubicación actual o el destino.", Toast.LENGTH_SHORT).show();
         }
@@ -192,9 +273,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Refactor: Metodo para centrar el mapa según el destino configurado
     private void centrarMapa() {
+
         LatLng destino = aplicacion.getMiDestino();
         if (destino.longitude == 0.0) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(17.077711, -96.744199), 18.0f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(17.077711, -96.744199), 25.0f));
         } else {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destino, 19.0f));
             agregarMarcador(destino, "Marcador Destino", R.drawable.marcador);
@@ -293,6 +375,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     break;
                 }
             }
+            marcarJEJE();
         }
     }
 }
